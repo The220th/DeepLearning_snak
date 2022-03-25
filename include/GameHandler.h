@@ -40,13 +40,28 @@ class GameHandler
 
     bool check_lose(const SnakeBlock &nextHead);
 
-    void reset();
+    /*
+        Найти:
+        mode == 1: стену
+        mode == 2: хвост (тело змеи)
+        mode == 3: яблоко
+        Относительно головы по направлению вектора v
+
+        иначе(если mode != 1 && mode != 2 && mode != 3): расстояние от головы до яблока
+    */
+    double find_something(SnakeBlock v, int mode);
+
+
 
     public:
     GameHandler(std::size_t width, std::size_t height, DrawField *drawField);
     ~GameHandler();
 
-    double getScore();
+    double getScore() const;
+
+    void reset();
+
+    Snake* getSnake() const;
 
     /*
     0 - nothing
@@ -57,6 +72,8 @@ class GameHandler
     */
    /*return: true = ok, false = lose*/
     bool tick(int action = 0);
+
+    int whatSnakeThink();
 };
 
 #endif // GAMEHANDLER_H

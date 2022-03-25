@@ -52,7 +52,19 @@ Matrix<T>::~Matrix()
 }
 
 template<typename T>
-T Matrix<T>::get(size_t i, size_t j)
+size_t Matrix<T>::get_n() const
+{
+    return n;
+}
+
+template<typename T>
+size_t Matrix<T>::get_m() const
+{
+    return m;
+}
+
+template<typename T>
+T Matrix<T>::get(size_t i, size_t j) const
 {
     if(/*i < 0 || */i >= n)
         throw printOutOfBound("i", i);
@@ -159,7 +171,7 @@ ostream& operator<< (ostream &out, const Matrix<T> &ma)
 }*/
 
 template<typename T>
-string Matrix<T>::printOutOfBound(string ij, size_t ij_val)
+string Matrix<T>::printOutOfBound(string ij, size_t ij_val) const
 {
     return "Out of bounds: n_row = " + to_string(n) + ", m_column = " + to_string(m) + ", and " + ij + " = " + to_string(ij_val) + ". ";
 }

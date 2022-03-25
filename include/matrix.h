@@ -14,14 +14,17 @@ class Matrix
     //Matrix();
     T **a;
     const size_t n, m;
-    string printOutOfBound(string ij, size_t ij_val);
+    string printOutOfBound(string ij, size_t ij_val) const;
 
     public:
     Matrix(size_t n_row, size_t m_column);
     Matrix(const Matrix& clonner);
     ~Matrix();
 
-    T get(size_t i, size_t j);
+    size_t get_n() const;
+    size_t get_m() const;
+
+    T get(size_t i, size_t j) const;
     void set(T value, size_t i, size_t j);
 
     static Matrix multiply(const Matrix& one, const Matrix& two);

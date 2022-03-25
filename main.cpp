@@ -15,6 +15,8 @@
 */
 int main(int argc, char *argv[])
 {
+    sup_randInit();
+    
     QApplication app(argc, argv);
 
     MainWindow window;

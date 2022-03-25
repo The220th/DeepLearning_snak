@@ -1,10 +1,14 @@
 
 #include <random>
 #include <iostream>
+#include <cmath>
+#include <iostream>
 
 #include "../include/DrawField.h"
 #include "../include/GameHandler.h"
 #include "../include/Snake.h"
+#include "../include/SnakeBrain.h"
+#include "../include/matrix.h"
 
 GameHandler::GameHandler(size_t width, size_t height, DrawField *drawField) : W(width), H(height)
 {
@@ -68,8 +72,10 @@ bool GameHandler::check_lose(const SnakeBlock &nextHead)
 
 void GameHandler::reset()
 {
+    SnakeBrain *buffBrain = new SnakeBrain(*(snake->getBrain()));
     delete snake;
     snake = new Snake();
+    snake->setBrain(buffBrain); // Операция по пересадке мозга прошла успешно=/
 
     score = 0; ticks_behind = 0; apple_count = 0;
 
@@ -78,9 +84,14 @@ void GameHandler::reset()
     random_apple();
 }
 
-double GameHandler::getScore()
+double GameHandler::getScore() const
 {
     return ticks_behind*ticks_behind * fast_pow(2,    (apple_count>10?10:apple_count)   ) * 2*apple_count;
+}
+
+Snake* GameHandler::getSnake() const
+{
+    return snake;
 }
 
 bool GameHandler::tick(int action)
@@ -161,4 +172,102 @@ void GameHandler::drawGameField()
     df->putPoint(snakeHead.x, snakeHead.y, snake_head_color);
 
     df->putPoint(apple.x, apple.y, appleColor);
+}
+
+int GameHandler::whatSnakeThink()
+{
+    const SnakeBrain *brain = snake->getBrain();
+    Matrix<double> v_in(brain->inNum+1, 1);
+
+    //   3                 *       8                   +   1         +      1     =   26
+    // wall,snake,apple         L,LU,U,RU,R,RD,D,LD       r_apple        const=1
+
+    //wall
+    v_in.set(find_something({-1, 0}, 1), 0, 0);
+    v_in.set(find_something({-1, 1}, 1), 1, 0);
+    v_in.set(find_something({0, 1}, 1), 2, 0);
+    v_in.set(find_something({1, 1}, 1), 3, 0);
+    v_in.set(find_something({1, 0}, 1), 4, 0);
+    v_in.set(find_something({1, -1}, 1), 5, 0);
+    v_in.set(find_something({0, -1}, 1), 6, 0);
+    v_in.set(find_something({-1, -1}, 1), 7, 0);
+
+    //tail (snake)
+    v_in.set(find_something({-1, 0}, 2), 8, 0);
+    v_in.set(find_something({-1, 1}, 2), 9, 0);
+    v_in.set(find_something({0, 1}, 2), 10, 0);
+    v_in.set(find_something({1, 1}, 2), 11, 0);
+    v_in.set(find_something({1, 0}, 2), 12, 0);
+    v_in.set(find_something({1, -1}, 2), 13, 0);
+    v_in.set(find_something({0, -1}, 2), 14, 0);
+    v_in.set(find_something({-1, -1}, 2), 15, 0);
+
+    //apple (watch?v=Ct6BUPvE2sM)
+    v_in.set(find_something({-1, 0}, 3), 16, 0);
+    v_in.set(find_something({-1, 1}, 3), 17, 0);
+    v_in.set(find_something({0, 1}, 3), 18, 0);
+    v_in.set(find_something({1, 1}, 3), 19, 0);
+    v_in.set(find_something({1, 0}, 3), 20, 0);
+    v_in.set(find_something({1, -1}, 3), 21, 0);
+    v_in.set(find_something({0, -1}, 3), 22, 0);
+    v_in.set(find_something({-1, -1}, 3), 23, 0);
+
+    // r
+    v_in.set(find_something({0, 0}, 5051), 24, 0);
+
+    // 1
+    v_in.set(1.0, 25, 0);
+
+    cout << v_in.toString() << endl;
+
+    return brain->think(v_in);
+}
+
+double GameHandler::find_something(SnakeBlock v, int mode)
+{
+    int k = 1;
+    int x, y;
+    SnakeBlock head = snake->getHead();
+    if(mode == 1)
+    {
+        do
+        {
+            x = head.x + v.x*k;
+            y = head.y + v.y*k;
+            ++k;
+        }while( !(x < 0 || x >= (int)W || y < 0 || y >= (int)H) );
+
+        return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+    }
+    else if(mode == 2)
+    {   
+        const SnakeBlock *sbs = snake->getSnakeBlocks();
+        size_t snake_size = snake->getSize();
+        while(true)
+        {
+            x = head.x + v.x*k;
+            y = head.y + v.y*k;
+            ++k;
+            if((x < 0 || x >= (int)W || y < 0 || y >= (int)H))
+                return 0; // Расстояние бесконечность
+            for(size_t i = 0; i < snake_size; ++i)
+                if(x == sbs[i].x && y == sbs[i].y)
+                    return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+        }
+    }
+    else if(mode == 3)
+    {
+        while(true)
+        {
+            x = head.x + v.x*k;
+            y = head.y + v.y*k;
+            ++k;
+            if((x < 0 || x >= (int)W || y < 0 || y >= (int)H))
+                return 0; // Расстояние бесконечность
+            if(x == apple.x && y == apple.y)
+                return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+        }
+    }
+    else
+        return 1.0 / sqrt((head.x-apple.x)*(head.x-apple.x) + (head.y-apple.y)*(head.y-apple.y));
 }

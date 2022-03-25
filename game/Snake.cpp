@@ -13,29 +13,33 @@ Snake::Snake(std::size_t initSize, unsigned snake_color) : color(snake_color)
     for(size_t i = 0; i < curSize; ++i)
         train[i] = {(int)(initSize-1-i), (int)(initSize-1)};
     head = train[0];
+
+    brain = NULL;
 }
 
 Snake::~Snake()
 {
     delete train;
+    if(brain != NULL)
+        delete brain;
 }
 
-const SnakeBlock* Snake::getSnakeBlocks()
+const SnakeBlock* Snake::getSnakeBlocks() const
 {
     return train;
 }
 
-size_t Snake::getSize()
+size_t Snake::getSize() const
 {
     return curSize;
 }
 
-SnakeBlock Snake::getHead()
+SnakeBlock Snake::getHead() const
 {
     return head;
 }
 
-unsigned Snake::getColor()
+unsigned Snake::getColor() const
 {
     return this->color;
 }
@@ -69,4 +73,30 @@ void Snake::move(int dx, int dy, bool grow)
         train[0] = {train[0].x+dx, train[0].y+dy};
         head = train[0];
     }
+}
+
+const SnakeBrain* Snake::getBrain() const
+{
+    return brain;
+}
+
+void Snake::setBrain(SnakeBrain *newBrain)
+{
+    if(brain != NULL)
+        delete brain;
+    brain = newBrain;
+}
+
+void Snake::setBrain(const Matrix<double> &genom)
+{
+    if(brain != NULL)
+        delete brain;
+    brain = new SnakeBrain(genom);
+}
+
+void Snake::setRndBrain()
+{
+    if(brain != NULL)
+        delete brain;
+    brain = new SnakeBrain();
 }

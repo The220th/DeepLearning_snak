@@ -2,6 +2,9 @@
 #include <cmath>
 #include <QColor>
 
+#include <cstdlib>
+#include <ctime>
+
 #include "../include/sup.h"
 
 using namespace std;
@@ -41,4 +44,20 @@ unsigned sup_getColor(unsigned char r, unsigned char g, unsigned char b, unsigne
 {
     QColor buff(r, g, b, alpha);
     return buff.rgb(); // #AARRGGBB
+}
+
+double ReLU(double x)
+{
+    return x>0?x:0;
+}
+
+double sup_rand(double fMin, double fMax)
+{
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
+
+void sup_randInit()
+{
+    srand(time(NULL));
 }

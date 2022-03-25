@@ -2,7 +2,10 @@
 #define SNAKE_H
 
 #include <cstdlib>
+
 #include "../include/sup.h"
+#include "../include/SnakeBrain.h"
+#include "../include/matrix.h"
 
 struct SnakeBlock
 {
@@ -19,17 +22,17 @@ class Snake
     SnakeBlock head;
     const unsigned color;
 
-
+    SnakeBrain *brain;
 
     public:
     Snake(std::size_t initSize = 3, unsigned snake_color = sup_getColor(0, 255, 0));
     ~Snake();
 
-    const SnakeBlock* getSnakeBlocks();
-    std::size_t getSize();
-    SnakeBlock getHead();
+    const SnakeBlock* getSnakeBlocks() const;
+    std::size_t getSize() const;
+    SnakeBlock getHead() const;
 
-    unsigned getColor();
+    unsigned getColor() const;
 
     /*
     ] dx = 1, dy = 0
@@ -41,6 +44,14 @@ class Snake
         o
     */
     void move(int dx, int dy, bool grow = false);
+
+    const SnakeBrain* getBrain() const;
+
+    void setBrain(SnakeBrain *newBrain);
+
+    void setBrain(const Matrix<double> &genom);
+
+    void setRndBrain();
 };
 
 #endif // SNAKE_H

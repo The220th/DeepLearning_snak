@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), GAME_W(50), GAME_H(50
     setLayout(grid);
 
     gh = new GameHandler(GAME_W, GAME_H, drawField);
+    gh->getSnake()->setRndBrain();
 
     this->startTimer(tickTime_mili);
 }
@@ -71,7 +72,8 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
     drawField->refreshDisplay();
 
-    bool isOK = gh->tick(lastKey);
+    //bool isOK = gh->tick(lastKey);
+    bool isOK = gh->tick(gh->whatSnakeThink());
     if(!isOK)
         lastKey = 3;
     else
