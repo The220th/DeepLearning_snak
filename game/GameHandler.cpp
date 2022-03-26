@@ -20,6 +20,8 @@ GameHandler::GameHandler(size_t width, size_t height, DrawField *drawField) : W(
 
     dir = 3;
 
+    ifLOSE = false;
+
     random_apple();
 }
 
@@ -81,12 +83,14 @@ void GameHandler::reset()
 
     dir = 3;
 
+    ifLOSE = false;
+
     random_apple();
 }
 
 double GameHandler::getScore() const
 {
-    return ticks_behind*ticks_behind * fast_pow(2,    (apple_count>10?10:apple_count)   ) * 2*apple_count;
+    return ticks_behind*ticks_behind * fast_pow(2,    (apple_count>10?10:apple_count)   ) * 2*(apple_count+1);
 }
 
 Snake* GameHandler::getSnake() const
@@ -96,6 +100,9 @@ Snake* GameHandler::getSnake() const
 
 bool GameHandler::tick(int action)
 {
+    if(ifLOSE)
+        return false;
+
     bool res = true;
 
     int snake_dir;
@@ -132,7 +139,8 @@ bool GameHandler::tick(int action)
 
     if(check_lose(buffHead))
     {
-        reset();
+        //reset();
+        ifLOSE = true;
         res = false;
     }
 
@@ -150,7 +158,8 @@ bool GameHandler::tick(int action)
 
     score = getScore(); //?!
 
-    drawGameField();
+    if(!ifLOSE)
+        drawGameField();
 
     ++ticks_behind;
 
@@ -165,6 +174,7 @@ void GameHandler::drawGameField()
 
     for(size_t i = 0; i < snake_size; ++i)
     {
+        //if(!(sbs[i].x < 0 || sbs[i].x >= (int)W || sbs[i].y < 0 || sbs[i].y >= (int)H))
         df->putPoint(sbs[i].x, sbs[i].y, snake_color);
     }
 
@@ -174,7 +184,7 @@ void GameHandler::drawGameField()
     df->putPoint(apple.x, apple.y, appleColor);
 }
 
-int GameHandler::whatSnakeThink()
+int GameHandler::whatSnakeThink() const
 {
     const SnakeBrain *brain = snake->getBrain();
     Matrix<double> v_in(brain->inNum+1, 1);
@@ -223,7 +233,7 @@ int GameHandler::whatSnakeThink()
     return brain->think(v_in);
 }
 
-double GameHandler::find_something(SnakeBlock v, int mode)
+double GameHandler::find_something(SnakeBlock v, int mode) const
 {
     int k = 1;
     int x, y;
@@ -270,4 +280,9 @@ double GameHandler::find_something(SnakeBlock v, int mode)
     }
     else
         return 1.0 / sqrt((head.x-apple.x)*(head.x-apple.x) + (head.y-apple.y)*(head.y-apple.y));
+}
+
+bool GameHandler::isLose() const
+{
+    return ifLOSE;
 }

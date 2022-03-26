@@ -5,12 +5,14 @@
 #include <QTimerEvent>
 
 #include <string>
+#include <iostream>
 
 #include "../include/MainWindow.h"
 #include "../include/DrawField.h"
 #include "../include/GameHandler.h"
+#include "../include/sup.h"
 
-MainWindow::MainWindow(QWidget *parent) : QWidget(parent), GAME_W(50), GAME_H(50)
+MainWindow::MainWindow(QWidget *parent) : QWidget(parent), GAME_W(50), GAME_H(50), gh_N(10)
 {
     lastKey = 0;
     tickTime_mili = 100;
@@ -64,6 +66,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         //gh->tick(3);
         lastKey = 3;
     }
+    else if(key == Qt::Key_Space)
+        gh->reset();
 }
 
 void MainWindow::timerEvent(QTimerEvent *event)
@@ -80,6 +84,8 @@ void MainWindow::timerEvent(QTimerEvent *event)
         lastKey = 0;
 
     scoreLabel->setText( (std::to_string((int)(gh->getScore()+0.5))).c_str() );
+
+    std::cout << "score: " << gh->getScore() << std::endl;
 
     drawField->update();
 }

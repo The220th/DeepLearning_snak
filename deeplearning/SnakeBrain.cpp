@@ -16,11 +16,11 @@ SnakeBrain::SnakeBrain() : M1(middleLayerNum, inNum+1), M2(outNum, middleLayerNu
         for(size_t lj = 0; lj < M2.get_m(); ++lj)
             M2.set(sup_rand(-1.0, 1.0), li, lj);
 
-    // Последние столбцы обязательно = 1
-    for(size_t li = 0; li < M1.get_n(); ++li)
-        M1.set(1, li, inNum);
-    for(size_t li = 0; li < M2.get_n(); ++li)
-        M2.set(1, li, middleLayerNum);
+    
+    //for(size_t li = 0; li < M1.get_n(); ++li)
+    //    M1.set(1, li, inNum);
+    //for(size_t li = 0; li < M2.get_n(); ++li)
+    //    M2.set(1, li, middleLayerNum);
 }
 
 SnakeBrain::SnakeBrain(const Matrix<double> &genom) : M1(middleLayerNum, inNum+1), M2(outNum, middleLayerNum+1)
@@ -68,4 +68,50 @@ int SnakeBrain::think(const Matrix<double> &v_in) const
         }
 
     return res+1;
+}
+
+Matrix<double> SnakeBrain::getGenom() const
+{
+    // genom is matrix n=1 , m=12*26 + 4*13
+    size_t m = middleLayerNum * (inNum+1) + outNum * (middleLayerNum+1);
+    Matrix<double> res(1, m);
+
+    size_t j = 0;
+
+    for(size_t li = 0; li < M1.get_n(); ++li)
+        for(size_t lj = 0; lj < M1.get_m(); ++lj)
+            res.set(M1.get(li, lj), 0, j++);
+
+    for(size_t li = 0; li < M2.get_n(); ++li)
+        for(size_t lj = 0; lj < M2.get_m(); ++lj)
+            res.set(M2.get(li, lj), 0, j++);
+
+    return res;
+}
+
+Matrix<double> SnakeBrain::offspring(const Matrix<double>& genom1, const Matrix<double>& genom2)
+{
+    // genom is matrix n=1 , m=12*26 + 4*13
+    size_t m = middleLayerNum * (inNum+1) + outNum * (middleLayerNum+1);
+    Matrix<double> res(1, m);
+
+    for(size_t j = 0; j < m; ++j)
+    {
+        int per = sup_rand(0, 100);
+        if(per > 1)
+        {
+            if(sup_rand_bool())
+                res.set(genom1.get(0, j), 0, j);
+            else
+                res.set(genom2.get(0, j), 0, j);
+        }
+        else // mutation
+        {
+            double toSet = (genom1.get(0, j)+genom2.get(0, j)) / 2.0;
+            toSet += (sup_rand_bool()?1:-1)*0.15*toSet;
+            res.set(toSet, 0, j);
+        }
+    }
+
+    return res;
 }

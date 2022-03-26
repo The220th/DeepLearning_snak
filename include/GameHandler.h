@@ -16,6 +16,8 @@ class GameHandler
     size_t apple_count;
     size_t ticks_behind;
 
+    bool ifLOSE;
+
     DrawField *df;
 
     Snake *snake;
@@ -49,7 +51,7 @@ class GameHandler
 
         иначе(если mode != 1 && mode != 2 && mode != 3): расстояние от головы до яблока
     */
-    double find_something(SnakeBlock v, int mode);
+    double find_something(SnakeBlock v, int mode) const;
 
 
 
@@ -73,7 +75,9 @@ class GameHandler
    /*return: true = ok, false = lose*/
     bool tick(int action = 0);
 
-    int whatSnakeThink();
+    int whatSnakeThink() const;
+
+    bool isLose() const;
 };
 
 #endif // GAMEHANDLER_H

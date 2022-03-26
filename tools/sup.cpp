@@ -57,7 +57,48 @@ double sup_rand(double fMin, double fMax)
     return fMin + f * (fMax - fMin);
 }
 
+double sup_rand(int iMin, int iMax)
+{
+    return iMin + ( rand() % (iMax - iMin + 1) );
+}
+
+bool sup_rand_bool()
+{
+    return rand() % 2 == 0;
+}
+
 void sup_randInit()
 {
     srand(time(NULL));
+}
+
+size_t sup_chooseProbablyBest(double* a, size_t n, double sumOfa)
+{
+    double point = sup_rand(0.0, sumOfa);
+    double sum = 0.0;
+    size_t i = 0;
+
+    while(sum < point)
+    {
+        sum += a[i++];
+        if(i >= n)
+            return -1;
+    }
+    return i-1;
+}
+
+double sup_calc_sum(double* a, size_t n)
+{
+    double res = 0.0;
+    for(size_t i = 0; i < n; ++i)
+        res += a[i];
+    return res;
+}
+
+bool sup_check_inclusion(double* a, size_t n, double x)
+{
+    for(size_t i = 0; i < n; ++i)
+        if(a[i] == x)
+            return true;
+    return false;
 }

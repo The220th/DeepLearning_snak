@@ -11,6 +11,8 @@
 #include <QKeyEvent>
 #include <QTimerEvent>
 
+#include <cstdlib>
+
 #include "../include/DrawField.h"
 #include "../include/GameHandler.h"
 
@@ -23,10 +25,13 @@ class MainWindow : public QWidget
     DrawField *drawField;
     QLabel *scoreLabel;
 
-    const size_t GAME_W;
-    const size_t GAME_H;
+    const std::size_t GAME_W;
+    const std::size_t GAME_H;
 
     GameHandler *gh;
+    double *gh_scores;
+    std::size_t gh_N;
+
     int tickTime_mili;
 
     /*

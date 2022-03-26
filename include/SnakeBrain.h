@@ -38,6 +38,10 @@ class SnakeBrain
     return: 1 - left, 2 - up, 3 - right, 4 - down
     */
     int think(const Matrix<double> &v_in) const;
+
+    Matrix<double> getGenom() const;
+
+    static Matrix<double> offspring(const Matrix<double>& genom1, const Matrix<double>& genom2);
 };
 
 #endif // SNAKEBRAIN_H
