@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     MainWindow window;
 
     window.setWindowTitle("DeepLearning snak");
-    window.resize(1280, 720);
+    //window.resize(1280, 720);
     window.setWindowIcon(QIcon("./imgsrc/ico.png"));
 
     /*if(argc == 1)

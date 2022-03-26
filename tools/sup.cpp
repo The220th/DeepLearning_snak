@@ -53,6 +53,11 @@ double ReLU(double x)
     return x>0?x:0;
 }
 
+double LeakyReLU(double x)
+{
+    return x>=0?x:0.01*x;
+}
+
 double sup_rand(double fMin, double fMax)
 {
     double f = (double)rand() / RAND_MAX;

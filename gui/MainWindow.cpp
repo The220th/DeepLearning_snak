@@ -72,12 +72,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     // https://doc.qt.io/qt-5/qt.html#Key-enum
     if(key == Qt::Key_Up)
     {
-        tickTime_mili += 10;
+        tickTime_mili += 2;
         timer->setInterval(tickTime_mili);
     }
     else if(key == Qt::Key_Down)
     {
-        tickTime_mili -= 10;
+        tickTime_mili -= 2;
         if(tickTime_mili < 1)
             tickTime_mili = 1;
         timer->setInterval(tickTime_mili);
@@ -107,7 +107,8 @@ void MainWindow::_timerEvent()
     for(size_t i = 0; i < gh_N; ++i)
         curscores[i] = (gh[i])->getScore();
 
-    double maxScore = sup_calc_max(curscores, gh_N);
+    size_t best_index;
+    double maxScore = sup_calc_max(curscores, gh_N, &best_index);
     scoreLabel->setText(("Score: " + (std::to_string((size_t)(maxScore+0.5)))).c_str() );
 
 
@@ -118,7 +119,10 @@ void MainWindow::_timerEvent()
         for(size_t i = 0; i < gh_N; ++i)
             oldGenoms[i] = new Matrix<double>( (gh[i])->getSnake()->getBrain()->getGenom() );
 
-        for(size_t i = 0; i < gh_N; ++i)
+        (gh[0])->reset();
+        (gh[0])->getSnake()->setBrain(*oldGenoms[best_index]);
+
+        for(size_t i = 1; i < gh_N; ++i)
         {
             (gh[i])->reset();
 

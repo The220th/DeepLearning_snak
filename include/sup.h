@@ -13,6 +13,8 @@ unsigned sup_getColor(unsigned char r, unsigned char g, unsigned char b, unsigne
 
 double ReLU(double x);
 
+double LeakyReLU(double x);
+
 /*Don`t forget call sup_randInit*/
 double sup_rand(double fMin, double fMax);
 

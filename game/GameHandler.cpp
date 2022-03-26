@@ -245,10 +245,10 @@ int GameHandler::whatSnakeThink() const
     v_in.set(find_something({-1, -1}, 3), 23, 0);
 
     // r
-    v_in.set(find_something({0, 0}, 5051), 24, 0);
+    //v_in.set(find_something({0, 0}, 5051), 24, 0);
 
     // 1
-    v_in.set(1.0, 25, 0);
+    v_in.set(1.0, 24, 0);
 
     //cout << v_in.toString() << endl;
 
@@ -269,7 +269,8 @@ double GameHandler::find_something(SnakeBlock v, int mode) const
             ++k;
         }while( !(x < 0 || x >= (int)W || y < 0 || y >= (int)H) );
 
-        return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+        //return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+        return 1.0 / (double)k;
     }
     else if(mode == 2)
     {   
@@ -284,7 +285,8 @@ double GameHandler::find_something(SnakeBlock v, int mode) const
                 return 0; // Расстояние бесконечность
             for(size_t i = 0; i < snake_size; ++i)
                 if(x == sbs[i].x && y == sbs[i].y)
-                    return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+                    return 1.0 / (double)k;
+                    //return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
         }
     }
     else if(mode == 3)
@@ -297,7 +299,8 @@ double GameHandler::find_something(SnakeBlock v, int mode) const
             if((x < 0 || x >= (int)W || y < 0 || y >= (int)H))
                 return 0; // Расстояние бесконечность
             if(x == apple.x && y == apple.y)
-                return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
+                return 1.0 / (double)k;
+                //return 1.0 / sqrt((head.x-x)*(head.x-x) + (head.y-y)*(head.y-y));
         }
     }
     else
