@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 
 #include "../include/sup.h"
 
@@ -72,7 +73,7 @@ void sup_randInit()
     srand(time(NULL));
 }
 
-size_t sup_chooseProbablyBest(double* a, size_t n, double sumOfa)
+size_t sup_chooseProbablyBest(const double* a, size_t n, double sumOfa)
 {
     double point = sup_rand(0.0, sumOfa);
     double sum = 0.0;
@@ -81,13 +82,13 @@ size_t sup_chooseProbablyBest(double* a, size_t n, double sumOfa)
     while(sum < point)
     {
         sum += a[i++];
-        if(i >= n)
-            return -1;
     }
+    if((i-1) >= n)
+        return -1;
     return i-1;
 }
 
-double sup_calc_sum(double* a, size_t n)
+double sup_calc_sum(const double* a, size_t n)
 {
     double res = 0.0;
     for(size_t i = 0; i < n; ++i)
@@ -95,10 +96,33 @@ double sup_calc_sum(double* a, size_t n)
     return res;
 }
 
-bool sup_check_inclusion(double* a, size_t n, double x)
+double sup_calc_max(const double* a, size_t n, size_t *index)
+{
+    double fmax = -std::numeric_limits<double>::infinity();
+    size_t fmax_i = -1;
+
+    for(size_t i = 0; i < n; ++i)
+        if(fmax < a[i])
+        {
+            fmax = a[i];
+            fmax_i = i;
+        }
+    
+    if(index != 0)
+        *index = fmax_i;
+    return fmax;
+}
+
+bool sup_check_inclusion(const double* a, size_t n, double x)
 {
     for(size_t i = 0; i < n; ++i)
         if(a[i] == x)
             return true;
     return false;
+}
+
+void sup_reset_array(double* a, size_t n, double x)
+{
+    for(size_t i = 0; i < n; ++i)
+        a[i] = x;
 }

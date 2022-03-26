@@ -22,7 +22,7 @@ class GameHandler
 
     Snake *snake;
     //const unsigned snake_head_color = sup_getColor(255, 0, 0) ^ sup_getColor(0, 255, 0);
-    const unsigned snake_head_color = sup_getColor(255, 0, 0, 128);
+    unsigned snake_head_color/* = sup_getColor(255, 0, 0, 128)*/;
 
     /*1 - left
     2 - up
@@ -30,7 +30,7 @@ class GameHandler
     4 - down*/
     int dir;
     SnakeBlock apple;
-    const unsigned appleColor = sup_getColor(255, 0, 0);
+    unsigned appleColor/* = sup_getColor(255, 0, 0)*/;
 
     std::random_device rd;
 
@@ -61,6 +61,7 @@ class GameHandler
 
     double getScore() const;
 
+    /*Мозг змейки не меняется*/
     void reset();
 
     Snake* getSnake() const;

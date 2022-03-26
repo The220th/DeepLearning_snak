@@ -24,15 +24,18 @@ class MainWindow : public QWidget
     private:
     DrawField *drawField;
     QLabel *scoreLabel;
+    QLabel *genLabel;
 
     const std::size_t GAME_W;
     const std::size_t GAME_H;
 
-    GameHandler *gh;
+    GameHandler **gh;
     double *gh_scores;
     std::size_t gh_N;
 
     int tickTime_mili;
+
+    size_t curGeneration;
 
     /*
     0 - nothing

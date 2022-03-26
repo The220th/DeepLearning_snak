@@ -30,11 +30,15 @@ a[0] a[1]   a[2]    a[3]        a[4]
 С большей вероятностью выберет больнший отрезок
 sumOfa <- sup_calc_sum(a, n)
 */
-size_t sup_chooseProbablyBest(double* a, size_t n, double sumOfa);
+size_t sup_chooseProbablyBest(const double* a, size_t n, double sumOfa);
 
-double sup_calc_sum(double* a, size_t n);
+double sup_calc_sum(const double* a, size_t n);
+
+double sup_calc_max(const double* a, size_t n, size_t *index = 0);
 
 /*Если в a есть x, то true*/
-bool sup_check_inclusion(double* a, size_t n, double x);
+bool sup_check_inclusion(const double* a, size_t n, double x);
+
+void sup_reset_array(double* a, size_t n, double x);
 
 #endif // SUP_H

@@ -14,6 +14,12 @@ GameHandler::GameHandler(size_t width, size_t height, DrawField *drawField) : W(
 {
     df = drawField;
 
+    appleColor = sup_getColor(sup_rand(128, 255), sup_rand(0, 50), sup_rand(0, 50));
+
+    //appleColor = sup_getColor(255, 0, 0);
+
+    snake_head_color = appleColor;
+
     snake = new Snake();
 
     score = 0; ticks_behind = 0; apple_count = 0;
@@ -228,7 +234,7 @@ int GameHandler::whatSnakeThink() const
     // 1
     v_in.set(1.0, 25, 0);
 
-    cout << v_in.toString() << endl;
+    //cout << v_in.toString() << endl;
 
     return brain->think(v_in);
 }
