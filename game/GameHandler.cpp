@@ -14,7 +14,7 @@ GameHandler::GameHandler(size_t width, size_t height, DrawField *drawField) : W(
 {
     df = drawField;
 
-    appleColor = sup_getColor(sup_rand(128, 255), sup_rand(0, 50), sup_rand(0, 50));
+    appleColor = sup_getColor(sup_rand(128, 255), sup_rand(0, 200), sup_rand(0, 200));
 
     //appleColor = sup_getColor(255, 0, 0);
 
@@ -27,6 +27,8 @@ GameHandler::GameHandler(size_t width, size_t height, DrawField *drawField) : W(
     dir = 3;
 
     ifLOSE = false;
+
+    ticksleft = STARTTICK;
 
     random_apple();
 }
@@ -91,12 +93,22 @@ void GameHandler::reset()
 
     ifLOSE = false;
 
+    ticksleft = STARTTICK;
+
     random_apple();
 }
 
 double GameHandler::getScore() const
 {
-    return ticks_behind*ticks_behind * fast_pow(2,    (apple_count>10?10:apple_count)   ) * 2*(apple_count+1);
+    if(apple_count < 10)
+        return ticks_behind*ticks_behind * fast_pow(2, apple_count);
+    else
+        return ticks_behind*ticks_behind*1024*(apple_count-1);
+}
+
+int GameHandler::countApples() const
+{
+    return apple_count;
 }
 
 Snake* GameHandler::getSnake() const
@@ -106,6 +118,9 @@ Snake* GameHandler::getSnake() const
 
 bool GameHandler::tick(int action)
 {
+    --ticksleft;
+    if(ticksleft < 0)
+        ticksleft = 0;
     if(ifLOSE)
         return false;
 
@@ -143,7 +158,7 @@ bool GameHandler::tick(int action)
 
     buffHead = {buffHead.x + dx, buffHead.y + dy};
 
-    if(check_lose(buffHead))
+    if(ticksleft <= 0 || check_lose(buffHead))
     {
         //reset();
         ifLOSE = true;
@@ -152,6 +167,7 @@ bool GameHandler::tick(int action)
 
     if(buffHead.x == apple.x && buffHead.y == apple.y)
     {
+        ticksleft += STARTTICK;
         ++apple_count;
         snake->move(dx, dy, true);
         random_apple();

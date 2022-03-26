@@ -11,7 +11,8 @@ Snake::Snake(std::size_t initSize, unsigned snake_color) : color(snake_color)
     train = new SnakeBlock[curSize];
 
     for(size_t i = 0; i < curSize; ++i)
-        train[i] = {(int)(initSize-1-i), (int)(initSize-1)};
+        train[i] = {(int)(25-1-i), (int)(25-1)};
+        //train[i] = {(int)(initSize-1-i), (int)(initSize-1)};
     head = train[0];
 
     brain = NULL;

@@ -1,7 +1,8 @@
 
-#include <cmath>
 #include <QColor>
 
+#include <cmath>
+#include <random>
 #include <cstdlib>
 #include <ctime>
 #include <limits>
@@ -71,6 +72,30 @@ bool sup_rand_bool()
 void sup_randInit()
 {
     srand(time(NULL));
+}
+
+double sup_randGaussian(double mean, double stddev)
+{
+    // https://i.imgur.com/U8M5Wmy.png
+    // mean - математическое ожидание
+    // stddev - среднеквадратическое отклонение
+
+    // https://stackoverflow.com/questions/38244877/how-to-use-stdnormal-distribution
+    // random device class instance, source of 'true' randomness for initializing random seed
+    std::random_device rd; 
+
+    // Mersenne twister PRNG, initialized with seed from previous random device instance
+    std::mt19937 gen(rd()); 
+    
+    double sample;
+
+    // instance of class std::normal_distribution with specific mean and stddev
+    std::normal_distribution<double> d(mean, stddev);
+
+    // get random number with normal distribution using gen as random source
+    sample = d(gen);
+
+    return sample;
 }
 
 size_t sup_chooseProbablyBest(const double* a, size_t n, double sumOfa)

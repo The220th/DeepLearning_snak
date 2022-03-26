@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QKeyEvent>
 #include <QTimerEvent>
+#include <QTimer>
 
 #include <string>
 #include <iostream>
@@ -14,7 +15,7 @@
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent) : QWidget(parent), GAME_W(50), GAME_H(50), gh_N(10)
+MainWindow::MainWindow(QWidget *parent) : QWidget(parent), GAME_W(50), GAME_H(50), gh_N(100)
 {
     lastKey = 0;
     tickTime_mili = 100;
@@ -43,7 +44,12 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), GAME_W(50), GAME_H(50
     gh_scores = new double[gh_N];
     sup_reset_array(gh_scores, gh_N, -1.0);
 
-    this->startTimer(tickTime_mili);
+    //this->startTimer(tickTime_mili);
+    timer = new QTimer(this);
+    timer->setInterval(tickTime_mili);
+    //m_firstTimerId = timer->timerId();
+    connect(timer, SIGNAL(timeout()), this, SLOT(_timerEvent()));
+    timer->start();
 }
 
 MainWindow::~MainWindow()
@@ -66,29 +72,22 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     // https://doc.qt.io/qt-5/qt.html#Key-enum
     if(key == Qt::Key_Up)
     {
-        //gh->tick(2);
-        lastKey = 2;
+        tickTime_mili += 10;
+        timer->setInterval(tickTime_mili);
     }
     else if(key == Qt::Key_Down)
     {
-        //gh->tick(4);
-        lastKey = 4;
-    }
-    else if(key == Qt::Key_Left)
-    {
-        //gh->tick(1);
-        lastKey = 1;
-    }
-    else if(key == Qt::Key_Right)
-    {
-        //gh->tick(3);
-        lastKey = 3;
+        tickTime_mili -= 10;
+        if(tickTime_mili < 1)
+            tickTime_mili = 1;
+        timer->setInterval(tickTime_mili);
     }
 }
 
-void MainWindow::timerEvent(QTimerEvent *event)
+//void MainWindow::timerEvent(QTimerEvent *event)
+void MainWindow::_timerEvent()
 {
-    Q_UNUSED(event);
+    //Q_UNUSED(event);
 
     drawField->refreshDisplay();
 
@@ -109,7 +108,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
         curscores[i] = (gh[i])->getScore();
 
     double maxScore = sup_calc_max(curscores, gh_N);
-    scoreLabel->setText( (std::to_string((int)(maxScore+0.5))).c_str() );
+    scoreLabel->setText(("Score: " + (std::to_string((size_t)(maxScore+0.5)))).c_str() );
 
 
     if(!sup_check_inclusion(gh_scores, gh_N, -1.0)) // all games left
@@ -138,7 +137,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
         sup_reset_array(gh_scores, gh_N, -1.0);
 
         ++curGeneration;
-        genLabel->setText(std::to_string(curGeneration).c_str());
+        genLabel->setText(("Generation: " + std::to_string(curGeneration)).c_str());
     }
 
     drawField->update();

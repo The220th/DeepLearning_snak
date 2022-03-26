@@ -1,5 +1,6 @@
 
 #include <limits>
+#include <iostream>
 
 #include "../include/SnakeBrain.h"
 #include "../include/sup.h"
@@ -97,18 +98,17 @@ Matrix<double> SnakeBrain::offspring(const Matrix<double>& genom1, const Matrix<
 
     for(size_t j = 0; j < m; ++j)
     {
-        int per = sup_rand(0, 100);
-        if(per > 1)
+        if(sup_rand_bool())
+            res.set(genom1.get(0, j), 0, j);
+        else
+            res.set(genom2.get(0, j), 0, j);
+
+        if(sup_rand(0, 100) < 2) // mutation
         {
-            if(sup_rand_bool())
-                res.set(genom1.get(0, j), 0, j);
-            else
-                res.set(genom2.get(0, j), 0, j);
-        }
-        else // mutation
-        {
-            double toSet = (genom1.get(0, j)+genom2.get(0, j)) / 2.0;
-            toSet += (sup_rand_bool()?1:-1)*0.15*toSet;
+           // double toSet = (genom1.get(0, j)+genom2.get(0, j)) / 2.0;
+            double toSet = res.get(0, j) + sup_randGaussian()/5;
+            //toSet += (sup_rand_bool()?1:-1)*0.15*toSet;
+            //std::cout << res.get(0, j) << " " << sup_randGaussian() << std::endl;
             res.set(toSet, 0, j);
         }
     }

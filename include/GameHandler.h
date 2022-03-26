@@ -16,6 +16,9 @@ class GameHandler
     size_t apple_count;
     size_t ticks_behind;
 
+    int ticksleft;
+    const size_t STARTTICK =(size_t)(50*2.5+0.5);
+
     bool ifLOSE;
 
     DrawField *df;
@@ -60,6 +63,8 @@ class GameHandler
     ~GameHandler();
 
     double getScore() const;
+
+    int countApples() const;
 
     /*Мозг змейки не меняется*/
     void reset();

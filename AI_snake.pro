@@ -6,9 +6,9 @@ CONFIG += c++11
 TARGET = aisnak
 TEMPLATE = app
 
-QMAKE_CXXFLAGS = -ggdb
+#QMAKE_CXXFLAGS = -ggdb
 #QMAKE_CXXFLAGS_RELEASE -= -O1
-QMAKE_CXXFLAGS_RELEASE -= -O2
+#QMAKE_CXXFLAGS_RELEASE -= -O2
 
 SOURCES += ./main.cpp \
 ./gui/MainWindow.cpp ./gui/DrawField.cpp \

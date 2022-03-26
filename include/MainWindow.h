@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <QTimerEvent>
+#include <QTimer>
 
 #include <cstdlib>
 
@@ -46,6 +47,11 @@ class MainWindow : public QWidget
     */
     int lastKey;
 
+    QTimer *timer;
+
+    private Q_SLOTS:
+        void _timerEvent();
+
     public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -54,7 +60,7 @@ class MainWindow : public QWidget
 
     protected:
     void keyPressEvent(QKeyEvent *event);
-    void timerEvent(QTimerEvent *event);
+    //void timerEvent(QTimerEvent *event);
 };
 
 #endif // MAINWINDOW_H

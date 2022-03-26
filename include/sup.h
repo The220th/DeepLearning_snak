@@ -22,7 +22,10 @@ double sup_rand(int iMin, int iMax);
 /*Don`t forget call sup_randInit*/
 bool sup_rand_bool();
 
+double sup_randGaussian(double mean = 0, double stddev = 1);
+
 void sup_randInit();
+
 
 /*
 ---|------|-----|--------------|----
